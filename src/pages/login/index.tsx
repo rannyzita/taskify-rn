@@ -6,6 +6,7 @@ import Logo from '../../assets/logo.png';
 import { styles } from './styles'
 import { MaterialIcons, Octicons } from '@expo/vector-icons';
 import { Input } from '../../components/Input';
+import { Button } from '../../components/button';
 
 export default function Login() {
     const [email, setEmail] = React.useState('');
@@ -13,7 +14,7 @@ export default function Login() {
     const [laoding, setLaoding] = React.useState(false);
     const [secureTextEntry, setSecureTextEntry] = React.useState(true);
 
-    async function handleLogin() {
+    async function getLogin() {
         try {
             setLaoding(true);
             // Simula um delay para demonstrar carregamento
@@ -62,13 +63,7 @@ export default function Login() {
                 ></Input>
             </View>
             <View style={styles.boxBottom}>
-                <TouchableOpacity style={styles.button} onPress={() => handleLogin()}>
-                    {
-                        laoding?<ActivityIndicator color={'#FFF'} size={'small'}/>
-                    :
-                        <Text style={styles.textButton}>Entrar</Text>}
-                    
-                </TouchableOpacity>
+                <Button text="ENTRAR" loading={laoding} onPress={()=>getLogin()}/>
             </View>
             <Text style={styles.textBottom}>Não tem conta? <Text  style={styles.textBottomCreate}>Crie agora</Text></Text>
         </View>
