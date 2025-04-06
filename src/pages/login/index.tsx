@@ -7,10 +7,14 @@ import { styles } from './styles'
 import { MaterialIcons, Octicons } from '@expo/vector-icons';
 import { Input } from '../../components/Input';
 import { Button } from '../../components/button';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 export default function Login() {
-    const [email, setEmail] = React.useState('');
-    const [password, setPassword] = React.useState('');
+
+    const Navigation = useNavigation<NavigationProp<any>>();
+
+    const [email, setEmail] = React.useState('a');
+    const [password, setPassword] = React.useState('a');
     const [laoding, setLaoding] = React.useState(false);
     const [secureTextEntry, setSecureTextEntry] = React.useState(true);
 
@@ -21,6 +25,8 @@ export default function Login() {
             if (!email || !password) {
                 return Alert.alert('Atenção','Preencha todos os campos.');
             }
+
+            Navigation.reset({routes:[{name:'BottomRoutes'}]});
 
             setTimeout(()=>{
                 if (email == 'ranny@gmail.com' && password == '123456') {
@@ -34,7 +40,9 @@ export default function Login() {
 
         } catch (error) {
             console.error(error);
-        } 
+        } finally {
+            setLaoding(false);
+        }
     }
 
     return (
