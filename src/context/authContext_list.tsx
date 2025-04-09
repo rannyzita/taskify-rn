@@ -4,9 +4,15 @@ import { Alert, Dimensions, StyleSheet, Text, TouchableOpacity, View } from "rea
 import { MaterialIcons, AntDesign } from '@expo/vector-icons'
 import { Modalize } from "react-native-modalize";
 import { Input } from '../components/Input';
+import { themas } from '../global/themes';
+import { Flag } from '../components/flag';
 
 export const AuthContextList: any = createContext({});
 
+  const flags = [
+    { caption: 'Urgente', color: themas.colors.red},
+    { caption: 'Opcional', color: themas.colors.blueLigth}
+  ]
 export const AuthProviderList = (props: any): any => {
   const modalizeRef = useRef<Modalize>(null);
 
@@ -19,7 +25,18 @@ export const AuthProviderList = (props: any): any => {
     onOpen()
   },[])
 
-  const _renderFlags = 
+  const _renderFlags = () => {
+    return (
+      flags.map((item, index) => (
+        <TouchableOpacity key={index}>
+          <Flag
+            caption={item.caption}
+            color={item.color}
+          />
+        </TouchableOpacity>
+      ))
+    )
+  }
 
   const _container = () => {
     return (
