@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Text, TouchableOpacity, View } from 'react-native';
 import { styles } from "./styles";
 import { AntDesign, FontAwesome, Entypo, MaterialIcons } from '@expo/vector-icons'
 import { themas } from "../../global/themes";
+import { AuthContextList } from "../../context/authContext_list";
 export default function MyComponent({ state, navigation }: { state: any, navigation: any }) {
+
+    const {onOpen} = useContext<any>(AuthContextList)
 
     const go = (screenName:string)=>{
         navigation.navigate(screenName)
@@ -19,7 +22,7 @@ export default function MyComponent({ state, navigation }: { state: any, navigat
                 </AntDesign>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.tabItemButtom}>
+            <TouchableOpacity style={styles.tabItemButtom} onPress={()=> onOpen()}>
                 <View style={{width: '100%',
                     left:14, 
                     top: 4
@@ -37,7 +40,7 @@ export default function MyComponent({ state, navigation }: { state: any, navigat
                     <MaterialIcons name='edit'
                     color={'#fff'}
                     size={32}>
-                    
+
 
                     </MaterialIcons>
                 </View>
