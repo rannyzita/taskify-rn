@@ -1,6 +1,6 @@
 import React, { forwardRef, LegacyRef } from "react";
 import { MaterialIcons, FontAwesome, Octicons } from '@expo/vector-icons';
-import { View, TextInput, Text, TextInputProps, TouchableOpacity } from 'react-native';
+import { View, TextInput, Text, TextInputProps, TouchableOpacity, TextStyle, StyleProp } from 'react-native';
 
 import { themas } from "../../global/themes";
 import { styles } from './styles';
@@ -17,11 +17,13 @@ type Props = TextInputProps & {
     title?: string,
     onIconLeftPress?: () => void,
     onIconRightPress?: () => void,
+    height?:number,
+    labelStyle?:StyleProp<TextStyle>
 }
 
 export const Input = forwardRef((props: Props, ref: React.Ref<TextInput> | null) => {
 
-    const { IconLeft, IconRight, IconLeftName, iconRightName, title, onIconLeftPress, onIconRightPress,...rest } = props;
+    const { IconLeft, IconRight, IconLeftName, iconRightName, title, onIconLeftPress, onIconRightPress, labelStyle, height, ...rest } = props;
 
 
     const calculateSizeWidth = () => {
@@ -46,10 +48,10 @@ export const Input = forwardRef((props: Props, ref: React.Ref<TextInput> | null)
 
     return (
         <>
-            {title&&<Text style={styles.textInput}>{title}</Text>}
+            {title&&<Text style={[styles.textInput, labelStyle]}>{title}</Text>}
             <View style={[
-                styles.boxInput, {paddingLeft: calculateSizePaddingLeft()}]} >
-    
+                styles.boxInput, {paddingLeft: calculateSizePaddingLeft(), height:height||40}]} >
+                    
                 {IconLeft && IconLeftName &&(
                     <TouchableOpacity onPress={onIconLeftPress} style={styles.button}>
                         <IconLeft name={IconLeftName as any} size={20} color={themas.colors.gray} style={styles.icon}/>
@@ -58,7 +60,7 @@ export const Input = forwardRef((props: Props, ref: React.Ref<TextInput> | null)
                 
                 <TextInput 
                     style={[
-                        styles.input, {width: calculateSizeWidth()}]}
+                        styles.input, {width: calculateSizeWidth(), height: '100%'}]}
                     {...rest}
                 />
 
