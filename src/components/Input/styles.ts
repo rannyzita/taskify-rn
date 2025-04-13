@@ -11,17 +11,17 @@ export const styles = StyleSheet.create({
         marginTop: 10,
         flexDirection: 'row',
         backgroundColor: themas.colors.lightGray,
-        borderColor: themas.colors.lightGray,
+        borderColor: themas.colors.gray,
     },
     input: {
         width: '88%',
-        paddingHorizontal: 20,
+        paddingHorizontal: 4,
         height: '100%',
+        color: themas.colors.gray
     },
     textInput: {
-        marginLeft: 5,
+        marginLeft: 4,
         marginTop: 10,
-        color: themas.colors.gray
     },
     icon: {
         width: '100%',

@@ -8,6 +8,6 @@ export const themas = {
         red:'#FF494C',
         blueLigth:'#87CEF6',
         blackTransparent:'#00000040',
-        transparent: 
+        transparent: 'rgba(0,0,0,0.5)'
     }
 }
