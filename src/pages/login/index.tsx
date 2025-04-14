@@ -13,8 +13,8 @@ export default function Login() {
 
     const Navigation = useNavigation<NavigationProp<any>>();
 
-    const [email, setEmail] = React.useState('a');
-    const [password, setPassword] = React.useState('a');
+    const [email, setEmail] = React.useState('fs.vitoria.soares@gmail.com');
+    const [password, setPassword] = React.useState('123');
     const [laoding, setLaoding] = React.useState(false);
     const [secureTextEntry, setSecureTextEntry] = React.useState(true);
 
@@ -26,18 +26,12 @@ export default function Login() {
                 return Alert.alert('Atenção','Preencha todos os campos.');
             }
 
-            Navigation.reset({routes:[{name:'BottomRoutes'}]});
-
-            setTimeout(()=>{
-                if (email == 'ranny@gmail.com' && password == '123456') {
-                    Alert.alert('Logado com sucesso!');
-                    
-                } else {
-                    Alert.alert('Falha na autenticação!','Usuário ou senha inválidos.');
-                }
-                setLaoding(false);
-            },3000)
-
+            if(email == 'fs.vitoria.soares@gmail.com' && password == '123'){
+                Alert.alert('Logado com sucesso!');
+                return Navigation.reset({routes:[{name:'BottomRoutes'}]});
+            }else{
+                Alert.alert('Atenção', 'Campos Inválidos')
+            }
         } catch (error) {
             console.error(error);
         } finally {

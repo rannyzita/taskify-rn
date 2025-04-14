@@ -28,7 +28,7 @@ export const styles = StyleSheet.create({
     },
     card: {
         width: '100%',
-        height: 60,
+        minHeight: 60,
         backgroundColor:'#FFF',
         marginTop: 6,
         borderRadius: 10,
@@ -55,5 +55,13 @@ export const styles = StyleSheet.create({
     },
     descriptionCard: {
         color: themas.colors.gray
+    },
+    button: {
+        backgroundColor: 'red',
+        justifyContent: 'center',
+        alignItems:'center',
+        width:100,
+        marginVertical:10,
+        borderRadius:10
     }
 })

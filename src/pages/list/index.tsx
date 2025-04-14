@@ -1,57 +1,78 @@
-import React from "react";
+import React, { useContext, useRef } from "react";
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { styles } from './styles'
 import { Input } from '../../components/Input'
-import { MaterialIcons } from '@expo/vector-icons'
+import { AntDesign, MaterialIcons } from '@expo/vector-icons'
 import { Ball } from "../../components/ball";
 import { Flag } from '../../components/flag';
 import { themas } from '../../global/themes';
-
-type PropCard = {
-    item:number,
-    title:string,
-    description:string,
-    flag:'urgente' | 'opcional'
-}
-
-const data: Array<PropCard> = [
-    {
-      item: 0,
-      title: 'Realizar a lição de casa!',
-      description: 'página 10 a 20',
-      flag: 'urgente',
-    },
-    {
-      item: 1,
-      title: 'Passear com cachorro!',
-      description: 'página 10 a 20',
-      flag: 'urgente',
-    },
-    {
-      item: 2,
-      title: 'Sair para tomar açaí!',
-      description: 'página 10 a 20',
-      flag: 'urgente',
-    },
-  ];
+import { AuthContextList } from "../../context/authContext_list";
+import { formatDateToBR } from "../../global/functions";
+import { Swipeable } from 'react-native-gesture-handler'
 
 export default function List() {
 
-    const _renderCard = (item:PropCard) => {
+    const {taskList, handleDelete, handleEdit} = useContext<AuthContextType>(AuthContextList)
+    const swipeableRefs = useRef<Array<Swipeable | null>>([]);
+
+    const renderRightActions = ()=>  {
+        return(<View style={styles.button}>
+            <AntDesign 
+                name='delete'
+                size={20}
+                color={'#fff'}
+            />
+        </View>)
+    }
+
+    const renderLeftActions = () => {
         return (
-            <TouchableOpacity style={styles.card}>
-                <View style={styles.rowCard}>
-                    <View style={styles.rowCardLeft}>
-                        <Ball color='red'/>
-                        <View>
-                            <Text style={styles.titleCard}>{item.title}</Text>
-                            <Text style={styles.descriptionCard}>{item.description}</Text>
+          <View style={[styles.button, { backgroundColor: themas.colors.blueLigth }]}>
+            <AntDesign
+                name="edit"
+                size={20}
+                color={"#FFF"}
+            />
+          </View>
+        );
+      };
+
+    const handleSwipeOpen = (directions:'right'|'left', item:PropCard, index:any) => {
+        if(directions == 'right'){
+            handleDelete(item)
+        }else {
+            handleEdit(item)
+        }
+        swipeableRefs.current[index]?.close()
+    }
+
+    const _renderCard = (item:PropCard, index:any) => {
+        const color = item.flag == 'opcional'?themas.colors.blueLigth:themas.colors.red
+        return (
+            <Swipeable
+                ref ={(ref) => swipeableRefs.current[index] = ref}
+                key={index}
+                renderRightActions={renderRightActions}
+                renderLeftActions={renderLeftActions}
+                onSwipeableOpen={(directions)=>handleSwipeOpen(directions, item, index)}
+            >
+                <View style={styles.card}>
+                    <View style={styles.rowCard}>
+                        <View style={styles.rowCardLeft}>
+                            <Ball color={color}/>
+                            <View>
+                                <Text style={styles.titleCard}>{item.title}</Text>
+                                <Text style={styles.descriptionCard}>{item.description}</Text>
+                                <Text style={styles.descriptionCard}>até {formatDateToBR(item.timeLimit)}</Text>
+                            </View>
                         </View>
+                        
+                        <Flag 
+                            caption={item.flag} color={color}
+                        />
                     </View>
-                    
-                    <Flag caption="Urgente" color={themas.colors.red}/>
                 </View>
-            </TouchableOpacity>
+            </Swipeable>
         )
     }
 
@@ -67,13 +88,13 @@ export default function List() {
             </View>
             <View style={styles.boxList}>
                 <FlatList
-                data={data}
+                data={taskList}
                 style={{marginTop:40,
                     paddingHorizontal:30,
                 }}    
                 keyExtractor={(item, index)=>item.item.toString()}
                 renderItem={({item, index})=>{
-                    return (_renderCard(item))
+                    return (_renderCard(item, index))
                 }}
                 >
                 </FlatList>

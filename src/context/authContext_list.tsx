@@ -12,8 +12,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export const AuthContextList: any = createContext({});
 
   const flags = [
-    { caption: 'Urgente', color: themas.colors.red},
-    { caption: 'Opcional', color: themas.colors.blueLigth}
+    { caption: 'urgente', color: themas.colors.red},
+    { caption: 'opcional', color: themas.colors.blueLigth}
   ]
 export const AuthProviderList = (props: any): any => {
   const modalizeRef = useRef<Modalize>(null);
@@ -24,7 +24,9 @@ export const AuthProviderList = (props: any): any => {
   const [selectedTime, setSelectedTime] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);  
-  const [item, setItem] = useState(0);
+  const [item, setItem] = useState(0); 
+  const [taskList, setTaskList] = useState<PropCard[]>([]);
+  const [taskListBackup, setTaskListBackup] = useState<PropCard[]>([]);
 
   const onOpen = () => {
     modalizeRef?.current?.open();
@@ -36,7 +38,7 @@ export const AuthProviderList = (props: any): any => {
 
   // Abre automaticamente o modal
   useEffect(() => {
-    
+    get_taskList()
   },[])
 
   const _renderFlags = () => {
@@ -63,14 +65,17 @@ export const AuthProviderList = (props: any): any => {
     setSelectedTime(date)
   }
 
-  const handleSave = () => {
+  const handleSave = async() => {
+    if(!title || !description || !selectedFlag) {
+      return Alert.alert('Atenção', 'Preencha todos os campos')
+    }
     try {
       const newItem = {
-        item:Date.now(),
+        item:item !== 0?item:Date.now(),
         title,
         description,
-        flags:selectedFlag,
-        dateLimite: new Date(
+        flag:selectedFlag,
+        timeLimit: new Date(
           selectedDate.getFullYear(),
           selectedDate.getMonth(),
           selectedDate.getDate(),
@@ -78,11 +83,107 @@ export const AuthProviderList = (props: any): any => {
           selectedDate.getMinutes()
         ).toISOString(),
       }
+
+      const storageData = await AsyncStorage.getItem('taskList');
+      // console.log(storageData)
+      let taskList:Array<any> = storageData?JSON.parse(storageData):[]
+
+      const itemIndex = taskList.findIndex((task)=>task.item === newItem.item)
+
+      if(itemIndex >= 0){
+        taskList[itemIndex] = newItem
+      }else {
+        taskList.push(newItem)
+      }
+      
+       // asyncStorage so permite salvar em formato string 
+      await AsyncStorage.setItem('taskList', JSON.stringify(taskList)) 
+
+      setTaskList(taskList) 
+      setTaskListBackup(taskList)
+      setData()
+      onClose()
     } catch (error) {
       console.log('Erro ao salvar tarefa',error)
     }
   }
 
+  const setData = ()=>(
+    setTitle(''),
+    setDescription(''),
+    setSelectedFlag('urgente'),
+    setItem(0),
+    setSelectedDate(new Date()),
+    setSelectedTime(new Date())
+  )
+
+  async function get_taskList() {
+    try {
+      const storageData = await AsyncStorage.getItem('taskList')
+      const taskList = storageData ? JSON.parse(storageData):[]
+      setTaskList(taskList)
+      setTaskListBackup(taskList)
+    } catch (error) {
+      console.log('Erro em:', error)
+    }
+  }
+
+  type Task = {
+    item: string;
+  };
+
+  const handleDelete = async (itemToDelete: Task)=>{
+    try {
+      const storageData = await AsyncStorage.getItem('taskList')
+      const taskList:Array<any> = storageData?JSON.parse(storageData):[]
+  
+      const updatedTaskList = taskList.filter(item=>item.item !==itemToDelete.item)
+  
+      await AsyncStorage.setItem('taskList', JSON.stringify(updatedTaskList))
+
+      setTaskList(updatedTaskList)
+      setTaskListBackup(updatedTaskList)
+    } catch (error) {
+      console.log('Erro ao excluir o item', error)
+    }
+  }
+
+  const handleEdit = async (itemToEdit: PropCard) => {
+    try {
+      setTitle(itemToEdit.title)
+      setDescription(itemToEdit.description)
+      setItem(itemToEdit.item)
+      
+      const timeLimit = new Date(itemToEdit.timeLimit)
+      
+      setSelectedFlag(itemToEdit.flag)
+      setSelectedDate(timeLimit);
+      setSelectedTime(timeLimit);
+
+      onOpen()
+    } catch (error) {
+      console.log('Erro ao editar o item', error)
+    }
+  }
+
+  const filter = (t: string) => {
+    if (taskList.length == 0) return;
+    if (!t) return;
+  
+    const array = taskListBackup;
+    const campos = ['title', 'description'];
+  
+    const searchTerm = t.trim().toLowerCase();
+  
+    const filteredArray = array.filter((item) => {
+      for (let i = 0; i < campos.length; i++) {
+        if(item[campos[i]].trim().toLowerCase()){
+
+        }
+      }
+    });
+  }
+  
   const _container = () => {
     return (
       <KeyboardAvoidingView
@@ -175,7 +276,7 @@ export const AuthProviderList = (props: any): any => {
   };
 
   return (
-    <AuthContextList.Provider value={{ onOpen }}>
+    <AuthContextList.Provider value={{ onOpen, taskList, handleDelete, handleEdit }}>
       {props.children}
       <Modalize
         ref={modalizeRef}
