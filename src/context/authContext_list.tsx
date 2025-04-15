@@ -167,21 +167,24 @@ export const AuthProviderList = (props: any): any => {
   }
 
   const filter = (t: string) => {
-    if (taskList.length == 0) return;
-    if (!t) return;
   
     const array = taskListBackup;
     const campos = ['title', 'description'];
   
-    const searchTerm = t.trim().toLowerCase();
-  
-    const filteredArray = array.filter((item) => {
-      for (let i = 0; i < campos.length; i++) {
-        if(item[campos[i]].trim().toLowerCase()){
-
+    if (t){
+      const searchTerm = t.trim().toLowerCase();
+    
+      const filteredArray = array.filter((item) => {
+        for (let i = 0; i < campos.length; i++) {
+          if(item[campos[i]].trim().toLowerCase().includes(searchTerm)){
+            return true 
+          }
         }
-      }
-    });
+      });
+      setTaskList(filteredArray)
+    }else {
+      setTaskList(array)
+    }
   }
   
   const _container = () => {
@@ -276,7 +279,7 @@ export const AuthProviderList = (props: any): any => {
   };
 
   return (
-    <AuthContextList.Provider value={{ onOpen, taskList, handleDelete, handleEdit }}>
+    <AuthContextList.Provider value={{ onOpen, taskList, handleDelete, handleEdit,filter }}>
       {props.children}
       <Modalize
         ref={modalizeRef}
