@@ -68,6 +68,29 @@ export default function Login() {
                 <Button text="ENTRAR" loading={laoding} onPress={()=>getLogin()}/>
             </View>
             <Text style={styles.textBottom}>Não tem conta? <Text  style={styles.textBottomCreate}>Crie agora</Text></Text>
+
+            <View style={styles.buttonLogin}>
+                </View>
+                {/* Botão Google */}
+                <TouchableOpacity style={styles.socialButtonGoogle}>
+                    <Image source={require('../../assets/google.png')} style={styles.socialIcon} />
+                    <Text style={styles.socialText}>Entrar com o Google</Text>
+                </TouchableOpacity>
+
+                {/* Botão Facebook */}
+                <TouchableOpacity style={styles.socialButtonFacebook}>
+                    <Image source={require('../../assets/facebook.png')} style={styles.socialIcon} />
+                    <Text style={styles.socialText}>Entrar com o Facebook</Text>
+                </TouchableOpacity>
+
+                {/* Texto final de cadastro */}
+                <View style={styles.registerContainer}>
+                    <Text style={styles.registerText}>Não tem uma conta? </Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('Cadastro')}>
+                        <Text style={styles.registerLink}>Cadastre-se</Text>
+                    </TouchableOpacity>
+                </View>
         </View>
+        
     )
 }

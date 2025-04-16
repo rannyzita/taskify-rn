@@ -38,4 +38,10 @@ export const styles = StyleSheet.create({
         color: themas.colors.primary,
         fontWeight: 'bold',
     },
+    buttonLogin: {
+
+    },
+    socialButtonGoogle: {
+
+    }
 })
